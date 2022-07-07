@@ -111,10 +111,18 @@ class AS7265X():
             self.enableBulb(LED_IR)
             self.enableBulb(LED_UV)
             self.setIntegrationCycles(1)
+            time.sleep(1)
             return True ;
+        time.sleep(1)  
         return False;
 
-
+    def shut_down(self):
+        self.disableBulb(LED_WHITE)
+        self.disableBulb(LED_IR)
+        self.disableBulb(LED_UV)
+        return;
+      
+      
     def read(self):
         self.takeMeasurements()
         data = []
@@ -136,8 +144,8 @@ class AS7265X():
         data.append(self.getCalibratedW())
         data.append(self.getCalibratedK())
         data.append(self.getCalibratedL())
-
         print(data)
+        time.sleep(1)        
         return data;
 
     def begin(self):

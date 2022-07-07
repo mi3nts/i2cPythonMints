@@ -38,16 +38,21 @@ def main():
     scd30_valid    = scd30.initiate(30)
     as7265x_valid  = as7265x.initiate()
     while True:
-        print("======== SCD30 ========")
-        if scd30_valid:
-            scd30.read_scd30()
-        print("========       ========")
-        print("======== AS7265X ========")
-        if as7265x_valid:
-            as7265x.read()
-        print("========       ========")
-        time.sleep(5)
-   
+        try:
+            print("======== SCD30 ========")
+            if scd30_valid:
+                scd30.read()
+            print("=======================")
+            time.sleep(2.5)
+            print("======= AS7265X =======")
+            if as7265x_valid:
+                as7265x.read()
+            print("=======================")
+            time.sleep(2.5)
+        except:
+            break   
+        
+    as7265x.shut_down()
 
 if __name__ == "__main__":
    main()
