@@ -30,10 +30,11 @@ POLYNOMIAL                        =0x31
 
 class SCD30:
 
-    def __init__(self, i2c_dev):
+    def __init__(self, i2c_dev,debugIn):
         
         self.i2c_addr = SCD30_I2C_ADDR
-        self.i2c = i2c_dev
+        self.i2c      = i2c_dev
+        self.debug    =  debugIn
 
     def initiate_scd30(self,retriesIn):
         ready = None
@@ -50,7 +51,7 @@ class SCD30:
         if not retriesIn:
             return False
         else:
-            self.get_firmware_version(self)
+            self.get_firmware_version()
             self.set_measurement_interval(5)
             self.set_auto_self_calibration(active=False)
             self.start_periodic_measurement()
@@ -61,7 +62,7 @@ class SCD30:
             measurement = self.read_measurement()
             if measurement is not None:
                 co2, temp, rh = measurement
-                print(f"CO2: {co2:.2f}ppm, temp: {temp:.2f}'C, rh: {rh:.2f}%")
+                print("CO2: {:.2f}ppm, temp: {:.2f}'C, rh: {:.2f}%".format(co2,temp,rh))
                 return co2,temp,rh;
             else:
                 return;
@@ -125,7 +126,7 @@ class SCD30:
 
         if interval is None or not 2 <= interval <= 1800:
             print("Failed to read measurement interval, received: " +
-                          self.job_pretty_hex(interval))
+                         str(self.job_pretty_hex(interval)))
 
         return interval
 
@@ -281,7 +282,7 @@ class SCD30:
          If not it throws an error.
         """
         if not 0 <= word <= 0xFFFF:
-            print(f" Not withing the confines of 2 bytes: {word}")
+            print(" Not withing the confines of 2 bytes:" + str(word ))
             
     def job_send_command(self, command: int, num_response_words: int = 1,
                       arguments: list = []):
@@ -303,10 +304,11 @@ class SCD30:
             Eg: Firmware version
         """
         # Check to see if the command is valid 
-        self.job_check_word(command, "command")
-
-        print(f"Executing command {self.job_pretty_hex(command)} with "
-                      f"arguments: {self.job_pretty_hex(arguments)}")
+        self.job_check_word(command)
+		
+        if(self.debug):
+            print("Executing command " + str(self.job_pretty_hex(command)) + "with "
+                      "arguments:" + str(self.job_pretty_hex(arguments)))
 
         """
         # Each Messege with no arguments which is written should be 
@@ -324,11 +326,12 @@ class SCD30:
         
         # Nothing happens if there are no arguments
         for argument in arguments:
-            self.job_check_word(argument, "argument")
+            self.job_check_word(argument)
             raw_message.extend(argument.to_bytes(2, "big"))
             raw_message.append(self.job_crc8(argument))
-
-        print(f"Sending raw I2C data block: {self.job_pretty_hex(raw_message)}")
+		
+        if(self.debug):
+        	print("Sending raw I2C data block: "+ str(self.job_pretty_hex(raw_message)))
 
         # self.i2c.write_i2c_block_data(self._i2c_addr, command, arguments)
 
@@ -360,12 +363,14 @@ class SCD30:
         #    self._i2c_addr, command, 3 * num_response_words)
 
         raw_response = list(read_txn)
-
-        print("Received raw I2C response: " +self.job_pretty_hex(raw_response))
+		
+        if(self.debug):
+        	print("Received raw I2C response: " + str(self.job_pretty_hex(raw_response)))
 
         if len(raw_response) != 3 * num_response_words:
-            print(f"Wrong response length: {len(raw_response)} "
-                          f"(expected {3 * num_response_words})")
+            print("Wrong response length: " + str(len(raw_response)) 
+                   + "expected: " + str(3*num_response_words)
+                  )
 
         # Data is returned as a sequence of num_response_words 2-byte words
         # (big-endian), each with a CRC-8 checksum:
@@ -382,13 +387,15 @@ class SCD30:
             computed_crc = self.job_crc8(word)
             if (response_crc != computed_crc):
                 print(
-                    f"CRC verification for word {self.job_pretty_hex(word)} "
-                    f"failed: received {self.job_pretty_hex(response_crc)}, "
-                    f"computed {self.job_pretty_hex(computed_crc)}")
+                    "CRC verification for word " + str(self.job_pretty_hex(word)) +
+                    "failed: received " + str(self.job_pretty_hex(response_crc)) +
+                    "computed " +str(self.job_pretty_hex(computed_crc)))
                 return None
             response.append(word)
-
-        print(f"CRC-verified response: {self.job_pretty_hex(response)}")
+		
+        if(self.debug):
+        	print("CRC-verified response: " + str(self.job_pretty_hex(response)))
+        
         return response
 
 

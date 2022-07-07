@@ -27,24 +27,20 @@ import time
 import os
 import smbus2
 
-
+debug  = False 
 
 bus = smbus2.SMBus(1)
-scd30 = SCD30(bus)
+scd30 = SCD30(bus,debug)
 
 
 def main():
     scd30_valid  = scd30.initiate_scd30(30)
 
     while True:
-        os.system('clear')
+        print("======== SCD30 ========")
         if scd30_valid:
-            if scd30.get_data_ready():
-                measurement = scd30.read_measurement()
-                if measurement is not None:
-                    co2, temp, rh = measurement
-                    print(f"CO2: {co2:.2f}ppm, temp: {temp:.2f}'C, rh: {rh:.2f}%")
-        
+            scd30.read_scd30()
+        print("========       ========")
         
         
         time.sleep(5)
