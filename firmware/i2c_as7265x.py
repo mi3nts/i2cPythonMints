@@ -57,10 +57,11 @@ POLLING_DELAY = 0.01
 NIR = 0x00
 VISIBLE = 0x01
 UV = 0x02
-
+   
 LED_WHITE = 0x00
 LED_IR = 0x01
 LED_UV = 0x02
+
 LED_CURRENT_LIMIT_12_5MA = 0b00
 LED_CURRENT_LIMIT_25MA   = 0b01
 LED_CURRENT_LIMIT_50MA   = 0b10
@@ -83,6 +84,7 @@ MEASUREMENT_MODE_6CHAN_ONE_SHOT = 0b11
 
 
 class AS7265X():
+
 
     def __init__(self, i2c_dev,debugIn):
         self.i2c_addr = AS7265X_I2C_ADDR

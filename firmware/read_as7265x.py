@@ -1,4 +1,5 @@
 from i2c_as7265x import AS7265X
+import i2c_as7265x
 import smbus2
 import numpy as np
 import matplotlib.pyplot as plt
@@ -10,9 +11,9 @@ debug  = False
 as7265x = AS7265X(bus,debug)
 
 as7265x.begin()
-as7265x.enableBulb(as7265x.LED_WHITE)
-as7265x.enableBulb(as7265x.LED_IR)
-as7265x.enableBulb(as7265x.LED_UV)
+as7265x.enableBulb(i2c_as7265x.LED_WHITE)
+as7265x.enableBulb(i2c_as7265x.LED_IR)
+as7265x.enableBulb(i2c_as7265x.LED_UV)
 as7265x.setIntegrationCycles(1)
 
 x = ['410', '435', '460', '485', '510', '535', '560', '585',
@@ -55,6 +56,6 @@ while (1):
     except:
         break
 
-as7265x.disableBulb(as7265x.LED_WHITE)
-as7265x.disableBulb(as7265x.LED_IR)
-as7265x.disableBulb(as7265x.LED_UV)
+as7265x.disableBulb(i2c_as7265x.LED_WHITE)
+as7265x.disableBulb(i2c_as7265x.LED_IR)
+as7265x.disableBulb(i2c_as7265x.LED_UV)
