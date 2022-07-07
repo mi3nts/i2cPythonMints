@@ -36,7 +36,7 @@ class SCD30:
         self.i2c      = i2c_dev
         self.debug    =  debugIn
 
-    def initiate_scd30(self,retriesIn):
+    def initiate(self,retriesIn):
         ready = None
         
         while ready is None and retriesIn:
@@ -57,7 +57,7 @@ class SCD30:
             self.start_periodic_measurement()
             return True 
     
-    def read_scd30(self):
+    def read(self):
         if self.get_data_ready():
             measurement = self.read_measurement()
             if measurement is not None:

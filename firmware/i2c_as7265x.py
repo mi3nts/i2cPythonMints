@@ -82,15 +82,63 @@ MEASUREMENT_MODE_4CHAN_2 = 0b01
 MEASUREMENT_MODE_6CHAN_CONTINUOUS = 0b10
 MEASUREMENT_MODE_6CHAN_ONE_SHOT = 0b11
 
+"""
+x = ['410', '435', '460', '485', '510', '535', '560', '585',
+     '610', '645', '680', '705', '730', '760', '810', '860',
+     '900', '940']
+
+'''Alphabetical order is not spectral order. ie
+A,B,C,D,E,F,G,H,I,J,K,L,R,S,T,U,V,W .
+According to the data sheets, the spectral order is
+A,B,C,D,E,F,G,H,R,I,S,J,T,U,V,W,K,L.
+
+The order in the example reflects the UV to NIR spectral order.
+'''
+
+"""
 
 class AS7265X():
-
 
     def __init__(self, i2c_dev,debugIn):
         self.i2c_addr = AS7265X_I2C_ADDR
         self.i2c      = i2c_dev
         self.debug    = debugIn
 
+
+    def initiate(self):
+        if self.begin(): 
+            self.enableBulb(LED_WHITE)
+            self.enableBulb(LED_IR)
+            self.enableBulb(LED_UV)
+            self.setIntegrationCycles(1)
+            return True ;
+        return False;
+
+
+    def read(self):
+        self.takeMeasurements()
+        data = []
+        data.append(self.getCalibratedA())
+        data.append(self.getCalibratedB())
+        data.append(self.getCalibratedC())
+        data.append(self.getCalibratedD())
+        data.append(self.getCalibratedE())
+        data.append(self.getCalibratedF())
+        data.append(self.getCalibratedG())
+        data.append(self.getCalibratedH())
+        data.append(self.getCalibratedR())        
+        data.append(self.getCalibratedI())
+        data.append(self.getCalibratedS())
+        data.append(self.getCalibratedJ())
+        data.append(self.getCalibratedT())
+        data.append(self.getCalibratedU())
+        data.append(self.getCalibratedV())
+        data.append(self.getCalibratedW())
+        data.append(self.getCalibratedK())
+        data.append(self.getCalibratedL())
+
+        print(data)
+        return data;
 
     def begin(self):
 

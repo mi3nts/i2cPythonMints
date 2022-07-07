@@ -8,26 +8,6 @@ bus = smbus2.SMBus(1)
 
 debug  = False 
 
-as7265x = AS7265X(bus,debug)
-
-as7265x.begin()
-as7265x.enableBulb(i2c_as7265x.LED_WHITE)
-as7265x.enableBulb(i2c_as7265x.LED_IR)
-as7265x.enableBulb(i2c_as7265x.LED_UV)
-as7265x.setIntegrationCycles(1)
-
-x = ['410', '435', '460', '485', '510', '535', '560', '585',
-     '610', '645', '680', '705', '730', '760', '810', '860',
-     '900', '940']
-
-'''Alphabetical order is not spectral order. ie
-A,B,C,D,E,F,G,H,I,J,K,L,R,S,T,U,V,W .
-According to the data sheets, the spectral order is
-A,B,C,D,E,F,G,H,R,I,S,J,T,U,V,W,K,L.
-
-The order in the example reflects the UV to NIR spectral order.
-'''
-
 while (1):
     try:
         as7265x.takeMeasurements()

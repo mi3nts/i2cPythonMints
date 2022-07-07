@@ -21,6 +21,7 @@
 
 #import SI1132
 from i2c_scd30 import SCD30
+from i2c_as7265x import AS7265X
 
 import sys
 import time
@@ -29,43 +30,24 @@ import smbus2
 
 debug  = False 
 
-bus = smbus2.SMBus(1)
-scd30 = SCD30(bus,debug)
-
+bus     = smbus2.SMBus(1)
+scd30   = SCD30(bus,debug)
+as7265x = AS7265X(bus,debug)
 
 def main():
-    scd30_valid  = scd30.initiate_scd30(30)
-
+    scd30_valid    = scd30.initiate(30)
+    as7265x_valid  = as7265x.initiate()
     while True:
         print("======== SCD30 ========")
         if scd30_valid:
             scd30.read_scd30()
         print("========       ========")
-        
-        
+        print("======== AS7265X ========")
+        if as7265x_valid:
+            as7265x.read()
+        print("========       ========")
         time.sleep(5)
-        
-        # print("======== bme280 ========")
-        # print("temperature : %.2f 'C" % bme280.read_temperature())
-        # print("humidity : %.2f %%" % bme280.read_humidity())
-        # p = bme280.read_pressure()
-        # print("pressure : %.2f hPa" % (p / 100.0))
-        # print("altitude : %.2f m" % get_altitude(p, 1024.25))
-        # print("======== ====== ========")
-        # time.sleep(1)
-
-
-    # if len(sys.argv) != 2:
-    #     print("ADD I2C DEV ADDRESS ARG")
-    #     sys.exit()
-
-    # #si1132 = SI1132.SI1132(sys.argv[1])
-    # bme280 = i2c_bme280.BME280(sys.argv[1], 0x03, 0x02, 0x02, 0x02)
-
-    # def get_altitude(pressure, seaLevel):
-    #     atmospheric = pressure / 100.0
-    #     return 44330.0 * (1.0 - pow(atmospheric/seaLevel, 0.1903))
-
+   
 
 if __name__ == "__main__":
    main()
