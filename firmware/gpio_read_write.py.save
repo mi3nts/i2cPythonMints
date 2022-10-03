@@ -1,0 +1,22 @@
+
+import odroid_wiringpi as wpi
+import time
+
+wpi.wiringPiSetup()
+
+while True:
+
+    batteryLevelRaw   =  wpi.analogRead(25)
+    batteryLevel      =  batteryLevelRaw*(2.1*2)/(4096)
+    batteryPercentage =  batteryLevel
+
+    time.sleep(1)
+
+#    referenceLev    = wpi.analogRead(29)
+    time.sleep(1)
+
+    print(referenceLev)
+    print("---------------------------------"
+    print("Battery Level: " + batteryLevelRaw)
+    print("---------------------------------")
+    print("Battery Level: " + batteryLevel)
